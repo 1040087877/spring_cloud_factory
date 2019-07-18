@@ -32,7 +32,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring-cloud.version>Dalston.SR1</spring-cloud.version>
+        <!--老版本-->
+        <!--<spring-cloud.version>Dalston.SR1</spring-cloud.version>-->
+        <spring-cloud.version>Edgware.SR1</spring-cloud.version>
         <java.version>8</java.version>
     </properties>
 
