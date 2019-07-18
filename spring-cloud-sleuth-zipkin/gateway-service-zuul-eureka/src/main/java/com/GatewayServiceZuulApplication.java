@@ -13,8 +13,8 @@ public class GatewayServiceZuulApplication {
         SpringApplication.run(GatewayServiceZuulApplication.class, args);
     }
 
-    @Bean
+    /*@Bean
     public TokenFilter tokenFilter(){
         return new TokenFilter();
-    }
+    }*/
 }
