@@ -1,0 +1,66 @@
+server:
+  port: 8080
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: neo_route
+          uri: http://www.ityouknow.com
+          predicates:
+            - Path=/spring-cloud
+        - id: time_route
+          uri: http://ityouknow.com
+          predicates:
+            #- After=2019-07-21T23:51:06+08:00[Asia/Shanghai]
+            #- Before=2019-07-21T23:53:26#+08:00[Asia/Shanghai]
+            # 达到58秒的时候就不会转发了，包括58秒，验证过了
+            - Between=2019-07-21T23:54:26+08:00[Asia/Shanghai], 2019-07-21T23:58:20+08:00[Asia/Shanghai]
+        - id: cookie_route
+          uri: http://ityouknow.com
+          predicates:
+            - Cookie=ityouknow,kee.e
+        - id: header_route
+          uri: http://ityouknow.com
+          predicates:
+            - Header=X-Request-Id, \d+
+        - id: host_route
+          uri: http://ityouknow.com
+          predicates:
+            - Host=**.ityouknow.com
+        #- id: method_route
+        #  uri: http://ityouknow.com
+        #  predicates:
+        #    - Method=GET
+        - id: host_route
+          uri: http://ityouknow.com
+          predicates:
+            - Path=/foo/{segment}
+        - id: host_route
+          uri: http://ityouknow.com
+          predicates:
+            - Path=/foo/{segment}
+        - id: query_route
+          uri: http://ityouknow.com
+          predicates:
+            - Query=smile
+        - id: query_route
+          uri: http://ityouknow.com
+          predicates:
+            - Query=keep, pu.
+        - id: remoteaddr_route
+          uri: http://ityouknow.com
+          predicates:
+            - RemoteAddr=192.168.1.1/24
+        ##<各种 Predicates 同时存在于同一个路由时，请求必须同时满足所有的条件才被这个路由匹配> 就是下面这些条件必须同时满足才会转发
+        ## 一个请求满足多个路由的谓词条件时id规则，请求只会被首个成功匹配的路由转发，从上往下匹配
+        - id: host_foo_path_headers_to_httpbin
+          uri: http://ityouknow.com
+          predicates:
+            - Host=**.foo.org
+            - Path=/headers
+            - Method=GET
+            - Header=X-Request-Id, \d+
+            - Query=foo, ba.
+            - Query=baz
+            - Cookie=chocolate, ch.p
+            - After=2018-01-20T06:06:06+08:00[Asia/Shanghai]
