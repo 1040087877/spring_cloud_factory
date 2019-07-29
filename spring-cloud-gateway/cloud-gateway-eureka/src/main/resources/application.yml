@@ -3,6 +3,10 @@ server:
 spring:
   application:
     name: cloud-gateway-eureka
+  redis:
+    host: localhost
+    password:
+    port: 6379
   cloud:
     gateway:
       discovery:
@@ -56,12 +60,56 @@ spring:
           uri: http://ityouknow.com
           predicates:
             - RemoteAddr=192.168.1.1/24
-        - id: add_request_parameter_route
-          uri: lb://spring-cloud-producer
-          filters:
-            - AddRequestParameter=foo, bar
-          predicates:
-            - Method=GET
+        #- id: add_request_parameter_route
+        #  uri: lb://spring-cloud-producer
+        #  filters:
+        #    - AddRequestParameter=foo, bar
+        #  predicates:
+        #    - Method=GET
+        #- id: nameRoot
+        #  uri: lb://spring-cloud-producer
+        #  predicates:
+        #    - Path=/name/**
+        #  filters:
+        #    - StripPrefix=2
+        #- id: nameRoot
+        #  uri: lb://spring-cloud-producer
+        #  predicates:
+        #    - Method=GET
+        #  filters:
+        #    - PrefixPath=/foo
+        # 限流
+        #- id: requestratelimiter_route
+        #  uri: http://ityouknow.com
+        #  filters:
+        #    - name: RequestRateLimiter
+        #      args:
+        #        redis-rate-limiter.replenishRate: 1
+        #        redis-rate-limiter.burstCapacity: 2
+        #        key-resolver: "#{@userKeyResolver}"
+        #  predicates:
+        #    - Method=GET
+        # 熔断
+        #- id: hystrix_route
+        #  uri: lb://spring-cloud-producer
+        #  predicates:
+        #    - Path=/foo
+        #  filters:
+        #    - name: Hystrix
+        #      args:
+        #        name: fallbackcmd
+        #        fallbackUri: forward:/fallback
+        # 重试
+        #- id: retry_test
+        #  uri: lb://spring-cloud-producer
+        #  predicates:
+        #    - Path=/**
+        #  filters:
+        #    - name: Retry
+        #      args:
+        #        retries: 6
+        #        statuses: BAD_GATEWAY
+        #        series: CLIENT_ERROR
         ##<各种 Predicates 同时存在于同一个路由时，请求必须同时满足所有的条件才被这个路由匹配> 就是下面这些条件必须同时满足才会转发
         ## 一个请求满足多个路由的谓词条件时id规则，请求只会被首个成功匹配的路由转发，从上往下匹配
         - id: host_foo_path_headers_to_httpbin
